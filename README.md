@@ -1,7 +1,7 @@
 Carousel
 ========
 
-A tiny jQuery plugin that converts any group of elements to a simple slider. Demo: http://designed.bymikita/carrousel/
+A tiny jQuery plugin that converts any group of elements to a simple slider. Demo: http://designed.bymikita.com/carrousel/
 
 Features
 --------

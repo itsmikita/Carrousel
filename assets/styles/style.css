@@ -1,0 +1,47 @@
+/**
+ * Example styles
+ */
+
+* {
+	font-family: 'Helvetica Neue', sans-serif;
+	margin: 0;
+	padding: 0;
+	color: #252525;
+}
+
+body {
+	background: #f1f1f1;
+}
+h1 {
+	font-size: 60px;
+	margin-bottom: 20px;
+}
+p {
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+hr {
+	background: transparent;
+	border: 0;
+	border-bottom: 2px solid #ddd;
+	margin: 20px 0;
+}
+
+#content {
+	margin: 40px 0;
+}
+#content .wrapper {
+	margin: 0 auto;
+	width: 800px;
+	overflow: hidden;
+}
+
+/* Excample CSS */
+#carrousel {
+	list-style-type: none;
+}
+#carrousel li {
+	float: left;
+	width: 800px;
+	height: 600px;
+}

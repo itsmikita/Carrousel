@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+
+<head>
+	
+	<meta charset="utf-8">
+	
+	<title>Carrousel</title>
+	
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	
+	<link rel="shortcut icon" href="">
+	<link rel="apple-touch-icon" href="">
+	<link rel="apple-touch-icon" sizes="72x72" href="">
+	<link rel="apple-touch-icon" sizes="114x114" href="">
+	<link rel="stylesheet" type="text/css" href="assets/styles/style.css">
+	
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.1/jquery.min.js"></script>
+	<script src="carrousel.js"></script>
+	<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+<body>
+	
+	<article id="content">
+		<div class="wrapper">
+			
+			<hr>
+			
+			<ul id="carrousel">
+				<li class="i1"><a href="#"><img src="assets/images/1.jpg"></a></li>
+				<li class="i2"><a href="#"><img src="assets/images/2.jpg"></a></li>
+				<li class="i3"><a href="#"><img src="assets/images/3.jpg"></a></li>
+				<li class="i4"><a href="#"><img src="assets/images/4.jpg"></a></li>
+				<li class="i5"><a href="#"><img src="assets/images/5.jpg"></a></li>
+				<li class="i6"><a href="#"><img src="assets/images/6.jpg"></a></li>
+				<li class="i7"><a href="#"><img src="assets/images/7.jpg"></a></li>
+			</ul>
+			
+			<hr>
+			
+		</div>
+	</article>
+	
+	<script type="text/javascript">
+		$( function() {
+			$( '#carrousel' ).carrousel();
+		} );
+	</script>
+	
+</body>
+</html>

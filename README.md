@@ -8,9 +8,19 @@ Features
 
 - Using CSS transitions (only)
 
+Changelog
+---------
+
+0.1
+- Added basic functions
+
+0.2
+- Fixed glitches in Safari: changed placeholder behavior
+
+0.3
+- Added navigation bar
+
 Future plans
 ------------
 
-- Add support for older browsers (`jQuery.animate()`)
-- Add method to spin to a specific slide
-- Add navigation
+- Upload on CDN as soon a stable version developed

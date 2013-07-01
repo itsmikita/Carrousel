@@ -2,7 +2,7 @@
  * jQuery Carrousel - tiny slider plugin
  *
  * @package Carrousel
- * @version 0.1
+ * @version 0.3
  * @author Mikita Stankiewicz <designovermatter@gmail.com>
  */
 
@@ -12,182 +12,191 @@
 	/**
 	 * Constructor
 	 *
-	 * @param object selector
+	 * @param Object selector
+	 * @param Object options
 	 */
 	var Carrousel = function( selector, options ) {
-		this.init( selector, options );
+		var defaults = {
+			delay: 5000,
+			duration: 500,
+		};
 		
-		return this;
+		this.options = $.extend( {}, defaults, options );
+		this.setup( selector );
+		this.spin();
 	};
 	
 	/**
 	 * Prototype
 	 */
 	Carrousel.prototype = {
+		object: null,
 		options: {},
-		carrousel: null,
-		ride: null,
-		
-		/**
-		 * Init
-		 */
-		init: function( selector, options ) {
-			var defaults = {
-				delay: 5000,
-				duration: 300,
-			};
-			
-			this.options = $.extend( {}, defaults, options );
-			this.setup( selector );
-			this.circulate();
-		},
 		
 		/**
 		 * Setup
+		 *
+		 * @param Object selector
 		 */
 		setup: function( selector ) {
-			this.carrousel = selector;
+			this.object = selector;
+			var carrousel = this;
 			
-			this.carrousel.wrap(
-					$( '<div id="carrousel-' + new Date().getTime() + '" class="carrousel-wrapper" />' )
-						.width( this.carrousel.children().width() )
-						.height( this.carrousel.children().height() )
-						.css( 'position', 'relative' )
-				)
+			this.object
 				.addClass( 'carrousel' )
-				.css( { // Fixes flickering
-					'-webkit-backface-visibility': 'hidden',
-					'-webkit-perspective': '1000',
+				.css( {
+					//'-webkit-backface-visibility': 'hidden',
+					//'-webkit-perspective': '1000',
+					'position': 'absolute',
+					width: this.object.children().width() * ( this.object.children().length + 1 ) + 'px',
 				} )
-				.width( this.carrousel.children().width() * this.carrousel.children().length )
-				.css( 'position', 'absolute' );
-			
-			this.carrousel.children()
-				.addClass( 'carrousel-child' );
-		},
-		
-		/**
-		 * Run continiuosly
-		 */
-		circulate: function() {
-			this.stop();
-			
-			var self = this;
-			
-			this.ride = setInterval( function() {
-				self.spin();
-			}, this.options.delay );
-		},
-		
-		/**
-		 * Stop
-		 */
-		stop: function() {
-			if( null != this.ride )
-				clearInterval( this.ride );
+				.children().addClass( 'carrousel-child' ).end()
+				.append( 
+					this.object
+						.children().first().clone()
+						.removeClass( 'carrousel-child' )
+						.addClass( 'carrousel-child-clone' ) 
+				)
+				.wrap(
+					$( '<div class="carrousel-platform" />' )
+						.css( {
+							width: this.object.children().width() + 'px',
+							height: this.object.children().height() + 'px',
+							position: 'relative',
+						} )
+				)
+				.closest( '.carrousel-platform' ).wrap(
+					$( '<div id="carrousel-' + new Date().getTime() + '" class="carrousel-wrapper" />' )
+						
+				)
+				.after(
+					$( '<ul class="carrousel-nav" />' )
+						.append( repeat( '<li class="carrousel-nav-item"><a href=""></a></li>', this.object.children().length ) )
+				)
+				.on( prefixed( 'transitionend' ), function() {
+					carrousel.object.css( prefixed( 'transition' ), 'none' );
+					
+					if( $( '.carrousel-current', carrousel.object ).is( '.carrousel-child-clone' ) )
+						carrousel.object.css( prefixed( 'transform' ), 'translate3d( 0, 0, 0 )' )
+							.children().removeClass( 'carrousel-current' ).first().addClass( 'carrousel-current' );
+					
+					carrousel.object.closest( '.carrousel-wrapper' )
+						.find( '.carrousel-nav li' ).removeClass( 'carrousel-current' )
+						.eq( $( '.carrousel-current', carrousel.object ).index() ).addClass( 'carrousel-current' );
+				} )
+				.closest( '.carrousel-wrapper' ).find( '.carrousel-nav a' ).on( 'click', function( e ) {
+					e.preventDefault();
+					
+					carrousel.spinTo( $( this ).closest( 'li' ).index() );
+				} );
 		},
 		
 		/**
 		 * Rotate
 		 */
 		spin: function() {
-			this.animate( 0, -this.carrousel.children().width() );
+			var carrousel = this,
+				current = $( '.carrousel-current', this.object ).index();
+			
+			this.spinTo( current + 1 );
 		},
 		
 		/**
-		 * CSS transitions
+		 * Spin to a child
 		 *
-		 * @todo Flickering in Safari, test if it helps do detach() in pure Javascript instead
+		 * @param Int n
 		 */
-		animate: function( top, left ) {
-			var self = this;
+		spinTo: function( n ) {
+			this.stop();
 			
-			function afterMath() {
-				self.carrousel
-					.css( self.prefixed( 'transition' ), 'none' )
-					.css( self.prefixed( 'transform' ), 'translateX( 0 )' )
-					.children().first().detach().appendTo( self.carrousel );
-			};
+			this.object
+				.css( prefixed( 'transition' ), prefixed( 'transform' ) + ' ' + this.options.duration + 'ms' )
+				.css( prefixed( 'transform' ), 'translate3d( -' + ( ( n ) * this.object.children().width() ) + 'px, 0, 0 )' )
+				.children().removeClass( 'carrousel-current' ).eq( n ).addClass( 'carrousel-current' ).end();
 			
-			this.carrousel
-				.css( this.prefixed( 'transition' ), this.prefixed( 'transform' ) + ' ' + this.options.duration + 'ms' )
-				.css( this.prefixed( 'transform' ), 'translateX( ' + left + 'px )' )
-				//.transitionend( afterMath );
-				//.one( 'transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', afterMath );
+			var carrousel = this;
 			
-			setTimeout( afterMath, this.options.duration );
-			
-			/*this.carrousel.animate( {
-				top: top + 'px',
-				left: left + 'px',
-			}, afterMath );*/
+			this.ride = setTimeout( function() {
+				carrousel.spin();
+			}, this.options.delay );
 		},
-		/* Using jQuery.animate()
-		animate: function() {
-			var self = this;
-			
-			function afterMath() {
-				self.carrousel
-					.css( 'margin-left', self.carrousel.children().width() + 'px' )
-					.children().first().detach().appendTo( self.carrousel );
-			};
-			
-			this.carrousel.animate( { 'margin-left': 0 }, afterMath );
-		},*/
 		
 		/**
-		 * Vendor property prefix helper
-		 *
-		 * @param string property
+		 * Stop ride
 		 */
-		prefixed: function( property ) {
-			switch( property ) {
-				default:
-					return property;
-					break;
-				
-				case 'transition':
-				case 'transform':
-					var prefix = '';
-					
-					if( 'WebkitTransform' in document.body.style )
-						prefix = '-webkit-';
-					else if( 'MozTransform' in document.body.style )
-						prefix = '-moz-';
-					else if( 'OTransform' in document.body.style )
-						prefix = '-o-';
-					else if( 'MsTransform' in document.body.style )
-						prefix = '-ms-';
-					else if( 'transform' in document.body.style )
-						prefix = '';
-					
-					return prefix + property;
-					break;
-			}
+		stop: function() {
+			if( 'undefined' !== this.ride )
+				clearTimeout( this.ride );
 		},
 	};
+		
+	/**
+	 * Vendor property prefix helper
+	 *
+	 * @param String property
+	 */
+	function prefixed( property ) {
+		switch( property ) {
+			default:
+				return property;
+				break;
+			
+			case 'transition':
+			case 'transform':
+				var prefix = '';
+				
+				if( 'WebkitTransform' in document.body.style )
+					prefix = '-webkit-';
+				else if( 'MozTransform' in document.body.style )
+					prefix = '-moz-';
+				else if( 'OTransform' in document.body.style )
+					prefix = '-o-';
+				else if( 'MsTransform' in document.body.style )
+					prefix = '-ms-';
+				else if( 'transform' in document.body.style )
+					prefix = '';
+				
+				return prefix + property;
+				break;
+			
+			case 'transitionend':
+				if( 'WebkitTransform' in document.body.style )
+					return 'webkitTransitionEnd';
+				else if( 'MozTransform' in document.body.style )
+					return 'mozTransitionEnd';
+				else if( 'OTransform' in document.body.style )
+					return 'oTransitionEnd';
+				else if( 'MsTransform' in document.body.style )
+					return 'msTransitionEnd';
+				else
+					return property;
+				break;
+		}
+	}
 	
 	/**
-	 * Event wrapper
-	 * @todo
+	 * Repeat string n times
+	 *
+	 * @param String string
+	 * @param Int times
 	 */
-	$.fn.transitionend = function( callback ) {
-		return this.each( function() {
-			var self = $( this ),
-				duration = parseFloat( self.css( 'transitionDuration' ) ) * 1000,
-				delay = parseFloat( self.css( 'transitionDelay' ) ) * 1000;
-			
-			self.data( 'timer', setTimeout( function() {
-				self.trigger( 'transitionend' );
-				
-				if( $.isFunction( callback ) )
-					callback();
-			}, delay + duration ) );
-		} );
+	function repeat( string, times ) {
+		if( times < 1 )
+			return '';
+		
+		var result = '';
+		
+		while( times > 0 )
+			times >>= 1,
+			result += string;
+		
+		return result;
 	};
 	
 	/**
 	 * jQuery plugin
+	 *
+	 * @param Object options
 	 */
 	$.fn.carrousel = function( options ) {
 		new Carrousel( this, options );

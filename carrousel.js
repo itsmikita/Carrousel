@@ -2,7 +2,7 @@
  * jQuery Carrousel - tiny slider plugin
  *
  * @package Carrousel
- * @version 0.3
+ * @version 0.4
  * @author Mikita Stankiewicz <designovermatter@gmail.com>
  */
 
@@ -71,7 +71,7 @@
 				)
 				.after(
 					$( '<ul class="carrousel-nav" />' )
-						.append( repeat( '<li class="carrousel-nav-item"><a href=""></a></li>', this.object.children().length ) )
+						.append( repeat( '<li class="carrousel-nav-item"><a href=""></a></li>', this.object.children().length - 1 ) )
 				)
 				.on( prefixed( 'transitionend' ), function() {
 					carrousel.object.css( prefixed( 'transition' ), 'none' );
@@ -184,10 +184,12 @@
 		if( times < 1 )
 			return '';
 		
+		console.log( times );
+		
 		var result = '';
 		
 		while( times > 0 )
-			times >>= 1,
+			times--,
 			result += string;
 		
 		return result;

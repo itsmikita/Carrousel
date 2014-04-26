@@ -1,26 +1,21 @@
-Carousel
-========
+Roller
+======
+CSS3 animated slider with minimum DOM dependencies.
 
-A tiny jQuery plugin that converts any group of elements to a simple slider. Demo: http://designed.bymikita.com/carrousel/
-
-Features
---------
-
-- Using CSS transitions (only)
+Usage
+-----
+Look into the code so far.
 
 Changelog
 ---------
+__0.1__
+* Added basic functions
 
-0.1
-- Added basic functions
+__0.2__
+* Fixed glitches in Safari: changed placeholder behavior
 
-0.2
-- Fixed glitches in Safari: changed placeholder behavior
+__0.3__
+* Added navigation bar
 
-0.3
-- Added navigation bar
-
-Future plans
-------------
-
-- Upload on CDN as soon a stable version developed
+__1.0__
+* Fully rewritten
